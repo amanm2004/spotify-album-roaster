@@ -3,8 +3,8 @@ from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
 
-from spotify_client import SpotifyClient
-from roast_generator import RoastGenerator
+from core.spotify_client import SpotifyClient
+from core.roast_generator import RoastGenerator
 
 
 # Load environment variables
