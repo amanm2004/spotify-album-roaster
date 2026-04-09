@@ -1,52 +1,13 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useTheme } from '../theme-provider';
 
 interface ThemeToggleProps {
   className?: string;
 }
 
-function getTheme() {
-  if (typeof window === 'undefined') return 'dark';
-  const stored = localStorage.getItem('theme') as 'dark' | 'light' | null;
-  if (stored) return stored;
-  return window.matchMedia('(prefers-color-scheme: light)').matches
-    ? 'light'
-    : 'dark';
-}
-
-function subscribe(callback: () => void) {
-  window.addEventListener('storage', callback);
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
-  mediaQuery.addEventListener('change', callback);
-  return () => {
-    window.removeEventListener('storage', callback);
-    mediaQuery.removeEventListener('change', callback);
-  };
-}
-
-const emptySubscribe = () => () => {};
-
-function getHydrated() {
-  return true;
-}
-
 export function ThemeToggle({ className = '' }: ThemeToggleProps) {
-  const theme = useSyncExternalStore(subscribe, getTheme, () => 'dark');
-  const hydrated = useSyncExternalStore(
-    emptySubscribe,
-    getHydrated,
-    () => false
-  );
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    window.location.reload();
-  };
-
-  if (!hydrated) return null;
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <button

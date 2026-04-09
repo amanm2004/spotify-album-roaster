@@ -67,268 +67,395 @@ export default function RoastInterface() {
   };
 
   return (
-    <main className="flex-1">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            Roast Your <span className="text-accent">Taste</span>
-          </h1>
-          <p className="text-lg text-foreground-muted max-w-xl mx-auto">
-            Connect your Spotify and get brutally honest feedback on your music
-            collection. No feelings allowed.
-          </p>
+    <main className="flex-1 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--accent-glow)_0%,_transparent_50%)]" />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(var(--border) 1px, transparent 1px)`,
+            backgroundSize: '24px 24px',
+            opacity: 0.5,
+          }}
+        />
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-8 md:py-12">
+        {/* Header Section */}
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
+          <div className="animate-fade-in">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-lg bg-accent flex items-center justify-center shadow-lg glow">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-white"
+                >
+                  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+                </svg>
+              </div>
+              <span className="text-sm font-mono text-foreground-subtle">
+                v1.0
+              </span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+              Spotify <span className="text-gradient">Roaster</span>
+            </h1>
+            <p className="text-foreground-muted max-w-md">
+              Brutally analyze your music taste. No mercy. No apologies.
+            </p>
+          </div>
+
+          {/* Stats Row */}
+          <div className="flex gap-3 animate-slide-up">
+            {[
+              { label: 'Playlists', value: '∞' },
+              { label: 'Roasts', value: '999+' },
+              { label: 'Burnt', value: '100%' },
+            ].map((stat, i) => (
+              <div
+                key={i}
+                className="px-4 py-2 rounded-lg border border-border bg-background-elevated/50 backdrop-blur"
+              >
+                <p className="text-lg font-bold text-foreground">
+                  {stat.value}
+                </p>
+                <p className="text-xs text-foreground-muted">{stat.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Input Section */}
-        <div className="max-w-xl mx-auto mb-12">
-          <Card variant="bordered" padding="lg" className="animate-slide-up">
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground-muted mb-2">
-                    Spotify Playlist or Album URL
-                  </label>
+        {/* Main Content - Split Layout */}
+        <div className="grid lg:grid-cols-5 gap-8">
+          {/* Input Column */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card variant="elevated" padding="lg" className="animate-slide-up">
+              <CardContent>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-2 h-2 rounded-full bg-green-500" />
+                  <span className="text-sm font-mono text-foreground-muted">
+                    INPUT_URL
+                  </span>
+                </div>
+                <div className="space-y-4">
                   <Input
                     placeholder="https://open.spotify.com/playlist/..."
                     value={spotifyUrl}
                     onChange={(e) => setSpotifyUrl(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleRoast()}
-                    className="font-mono text-sm"
+                    className="font-mono text-sm input-ring bg-background/50"
                   />
-                </div>
-                {error && <p className="text-sm text-error">{error}</p>}
-                <Button
-                  onClick={handleRoast}
-                  disabled={isLoading}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isLoading ? (
-                    <>
-                      <Spinner size="sm" />
-                      <span>Roasting...</span>
-                    </>
-                  ) : (
-                    <>
+                  {error && (
+                    <p className="text-sm text-error flex items-center gap-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
+                        width="14"
+                        height="14"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
                       >
-                        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
                       </svg>
-                      <span>Generate Roast</span>
-                    </>
+                      {error}
+                    </p>
                   )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  <Button
+                    onClick={handleRoast}
+                    disabled={isLoading}
+                    className="w-full h-11"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Spinner size="sm" />
+                        <span className="font-mono">ANALYZING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                        </svg>
+                        <span className="font-mono">EXECUTE_ROAST</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* Results Section */}
-        {result && (
-          <div className="space-y-6 animate-scale-in">
-            {/* Roast Card */}
-            <Card variant="elevated" padding="lg">
-              <CardContent>
-                <div className="flex items-start gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+            {/* How it works - Compact */}
+            <div className="animate-slide-up stagger-2">
+              <h3 className="text-sm font-mono text-foreground-muted mb-3">
+                {/* */} PROCESS
+              </h3>
+              <div className="space-y-2">
+                {[
+                  {
+                    step: '01',
+                    title: 'Paste URL',
+                    desc: 'Spotify link input',
+                  },
+                  { step: '02', title: 'Analyze', desc: 'AI scans tracks' },
+                  { step: '03', title: 'Roast', desc: 'Get destroyed' },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 p-3 rounded-lg border border-border bg-background-elevated/30"
+                  >
+                    <span className="text-xs font-mono text-accent">
+                      {item.step}
+                    </span>
+                    <span className="text-sm font-medium">{item.title}</span>
+                    <span className="text-xs text-foreground-subtle ml-auto">
+                      {item.desc}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Results Column */}
+          <div className="lg:col-span-3">
+            {result ? (
+              <div className="space-y-6 animate-scale-in">
+                {/* Roast Output */}
+                <Card
+                  variant="elevated"
+                  padding="lg"
+                  className="glow relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                  <CardContent className="relative">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            className="text-accent"
+                          >
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h2 className="text-lg font-semibold">
+                            {result.name}
+                          </h2>
+                          <p className="text-xs text-foreground-muted">
+                            by {result.creator}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant="accent" className="font-mono text-xs">
+                        OUTPUT
+                      </Badge>
+                    </div>
+
+                    <div className="relative">
+                      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent to-transparent rounded-full" />
+                      <div className="pl-5 space-y-3">
+                        <p className="text-base leading-relaxed whitespace-pre-wrap text-foreground">
+                          {result.roast}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-4 gap-3">
+                  {[
+                    {
+                      label: 'TRACKS',
+                      value: result.tracks.length,
+                      sub: 'total',
+                    },
+                    {
+                      label: 'POPULARITY',
+                      value: Math.round(result.avgPopularity),
+                      sub: 'avg',
+                    },
+                    {
+                      label: 'VIBE',
+                      value: getPopularityLabel(result.avgPopularity).label,
+                      isBadge: true,
+                      variant: getPopularityLabel(result.avgPopularity).variant,
+                    },
+                    {
+                      label: 'EXPLICIT',
+                      value: result.explicitCount,
+                      sub: 'tracks',
+                    },
+                  ].map((stat, i) => (
+                    <Card
+                      key={i}
+                      variant="bordered"
+                      padding="sm"
+                      className="card-hover"
+                    >
+                      <CardContent className="text-center p-3">
+                        {'isBadge' in stat ? (
+                          <Badge variant={stat.variant} className="text-[10px]">
+                            {stat.value}
+                          </Badge>
+                        ) : (
+                          <p className="text-xl font-bold text-foreground font-mono">
+                            {stat.value}
+                          </p>
+                        )}
+                        <p className="text-[10px] text-foreground-muted mt-1 font-mono">
+                          {'sub' in stat ? stat.sub : stat.label}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Track List */}
+                <Card variant="bordered" padding="md">
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-mono text-foreground-muted">
+                        TRACKS_ANALYZED
+                      </h3>
+                      <Badge
+                        variant="secondary"
+                        className="text-[10px] font-mono"
+                      >
+                        {result.tracks.length} items
+                      </Badge>
+                    </div>
+                    <div className="space-y-1 max-h-[300px] overflow-y-auto">
+                      {result.tracks.slice(0, 10).map((track, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between p-2 rounded hover:bg-background-subtle transition-colors group"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-xs font-mono text-foreground-subtle w-4">
+                              {i + 1}
+                            </span>
+                            <span className="text-sm truncate group-hover:text-accent transition-colors">
+                              {track.name}
+                            </span>
+                            {track.explicit && (
+                              <Badge
+                                variant="error"
+                                className="text-[8px] px-1"
+                              >
+                                E
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-foreground-muted hidden sm:inline">
+                              {track.artist}
+                            </span>
+                            <div className="w-8 h-1 rounded-full bg-background-muted overflow-hidden">
+                              <div
+                                className="h-full bg-accent rounded-full"
+                                style={{ width: `${track.popularity}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              /* Empty State */
+              <div className="h-full flex items-center justify-center min-h-[400px] animate-fade-in">
+                <div className="text-center">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-background-elevated border border-border flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
+                      width="32"
+                      height="32"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-accent"
+                      strokeWidth="1.5"
+                      className="text-foreground-subtle"
                     >
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                      <path d="M2 17l10 5 10-5" />
+                      <path d="M2 12l10 5 10-5" />
                     </svg>
                   </div>
-                  <div>
-                    <h2 className="text-xl font-semibold">{result.name}</h2>
-                    <p className="text-sm text-foreground-muted">
-                      by {result.creator}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="prose prose-invert max-w-none">
-                  <p className="text-lg leading-relaxed whitespace-pre-wrap text-foreground">
-                    {result.roast}
+                  <h3 className="text-lg font-semibold mb-2">Ready to Roast</h3>
+                  <p className="text-sm text-foreground-muted max-w-xs mx-auto">
+                    Enter a Spotify playlist or album URL above and hit execute
+                    to receive your personalized roast.
                   </p>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card variant="bordered" padding="md" className="text-center">
-                <CardContent>
-                  <p className="text-3xl font-bold text-foreground">
-                    {result.tracks.length}
-                  </p>
-                  <p className="text-sm text-foreground-muted mt-1">Tracks</p>
-                </CardContent>
-              </Card>
-
-              <Card variant="bordered" padding="md" className="text-center">
-                <CardContent>
-                  <p className="text-3xl font-bold text-foreground">
-                    {Math.round(result.avgPopularity)}
-                  </p>
-                  <p className="text-sm text-foreground-muted mt-1">
-                    Avg Popularity
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card variant="bordered" padding="md" className="text-center">
-                <CardContent>
-                  <Badge
-                    variant={getPopularityLabel(result.avgPopularity).variant}
-                  >
-                    {getPopularityLabel(result.avgPopularity).label}
-                  </Badge>
-                  <p className="text-sm text-foreground-muted mt-1">Vibe</p>
-                </CardContent>
-              </Card>
-
-              <Card variant="bordered" padding="md" className="text-center">
-                <CardContent>
-                  <p className="text-3xl font-bold text-foreground">
-                    {result.explicitCount}
-                  </p>
-                  <p className="text-sm text-foreground-muted mt-1">Explicit</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Track List */}
-            <Card variant="bordered" padding="lg">
-              <CardContent>
-                <h3 className="text-lg font-semibold mb-4">Tracks Analyzed</h3>
-                <div className="space-y-2">
-                  {result.tracks.slice(0, 8).map((track, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between py-2 px-3 rounded hover:bg-background-subtle transition-colors duration-150"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm text-foreground-subtle w-6">
-                          {index + 1}.
-                        </span>
-                        <span className="text-foreground">{track.name}</span>
-                        {track.explicit && (
-                          <Badge variant="error" className="text-[10px] px-1.5">
-                            E
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm text-foreground-muted">
-                          {track.artist}
-                        </span>
-                        <span className="text-xs text-foreground-subtle">
-                          {track.popularity}%
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {result.tracks.length > 8 && (
-                  <p className="text-sm text-foreground-subtle mt-4 text-center">
-                    + {result.tracks.length - 8} more tracks
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* How It Works Section */}
-        <div className="mt-20" id="how-it-works">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
-              How It Works
-            </h2>
-            <p className="text-foreground-muted mt-2">
-              Three steps to devastation
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                step: '01',
-                title: 'Paste URL',
-                description:
-                  'Grab any Spotify playlist or album URL. Yes, even that "Chill Vibes" one.',
-              },
-              {
-                step: '02',
-                title: 'Analyze',
-                description:
-                  'Our AI digs through your tracks, artists, and listening patterns.',
-              },
-              {
-                step: '03',
-                title: 'Get Roasted',
-                description:
-                  'Receive a brutally honest critique of your musical choices.',
-              },
-            ].map((item, index) => (
-              <Card
-                key={index}
-                variant="bordered"
-                padding="lg"
-                className="group hover:border-border-hover transition-colors duration-200"
-              >
-                <CardContent>
-                  <span className="text-5xl font-bold text-foreground-subtle group-hover:text-accent/30 transition-colors duration-200">
-                    {item.step}
-                  </span>
-                  <h3 className="text-lg font-semibold mt-4 mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-foreground-muted">
-                    {item.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+              </div>
+            )}
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="mt-20 pt-8 border-t border-border">
+        <footer className="mt-16 pt-6 border-t border-border">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-foreground-subtle">
-              Built with spite and AI
-            </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-xs font-mono text-foreground-subtle">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+              SYSTEM_ONLINE
+            </div>
+            <div className="flex items-center gap-6">
               <a
                 href="#"
-                className="text-sm text-foreground-muted hover:text-foreground transition-colors"
+                className="text-xs text-foreground-muted hover:text-foreground transition-colors font-mono"
               >
-                Privacy
+                PRIVACY
               </a>
               <a
                 href="#"
-                className="text-sm text-foreground-muted hover:text-foreground transition-colors"
+                className="text-xs text-foreground-muted hover:text-foreground transition-colors font-mono"
               >
-                Terms
+                TERMS
+              </a>
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground-muted hover:text-foreground transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
               </a>
             </div>
           </div>
